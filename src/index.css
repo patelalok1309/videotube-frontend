@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 
+*{
+    background: rgba(122, 101, 101, 0.3);
+} */
+
+body{
+    overflow-y: auto;
+    background-color: #0f0f0f;
+}
