@@ -11,8 +11,6 @@ const Alert = () => {
     const [showAlert, setShowAlert] = useState(true);
 
     const handleClose = () => {
-        console.log('message',message);
-        console.log('message',type);
         
         dispatch(
             setAlert({

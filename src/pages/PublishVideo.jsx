@@ -36,7 +36,6 @@ function PublishVideo() {
         let error = false;
         for (const key in formData) {
             if (formData[key] === '' || formData[key] === null) {
-                console.log('formData[key]', key);
                 dispatch(setAlert({
                     alert: {
                         alertVisible: true,
@@ -60,7 +59,6 @@ function PublishVideo() {
         publishVideo(formDataToSend)
             .then(res => {
                 if (res.success) {
-                    console.log('res', res);
                     dispatch(setAlert({
                         alert: {
                             alertVisible: true,

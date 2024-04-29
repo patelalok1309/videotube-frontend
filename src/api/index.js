@@ -30,7 +30,6 @@ export const getAllVideos = async () => {
             },
             withCredentials: true,
         });
-        console.log(response);
         return response.data.data;
     } catch (error) {
         console.error("Error occurred:", error);

@@ -4,7 +4,7 @@ function Logo() {
     return (
         <div
             style={{
-                width: "70%",
+                width: "50%",
                 height: "50%",
                 display: "block",
                 fill: "currentcolor",

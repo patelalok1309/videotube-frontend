@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { SidebarTogglerBtn } from '../Buttons'
 import { toggleSidebar } from '../../store/layoutSlice'
+import Logo from "../Logo";
 
 function Header() {
   const authStatus = useSelector((state) => state.authSlice.auth.status);
@@ -40,6 +41,12 @@ function Header() {
           <button onClick={handleSidebarToggle} className="mr-2 p-2 rounded-full hover:bg-black hover:opacity-80 hover:backdrop-blur-sm">
             <SidebarTogglerBtn height={40} width={40} fill={'#fff'} />
           </button>
+          {/* Youtube logo */}
+          <div className="sticky top-0">
+            <NavLink to="/" className="flex justify-start ml-5 items-center">
+              <Logo />
+            </NavLink>
+          </div>
 
           <ul className="flex ml-auto flex-wrap text-sm md:text-2xl">
             {navItems.map((item) =>
