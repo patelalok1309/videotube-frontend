@@ -9,6 +9,7 @@ import { Login, Signup } from './components'
 import Home from './pages/Home.jsx'
 import VideoPreview from './pages/VideoPreview.jsx'
 import PublishVideo from './pages/PublishVideo.jsx'
+import SearchResultList from './pages/SearchResultList.jsx'
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
       {
         path: '/publishVideo',
         element: <PublishVideo />
+      },
+      {
+        path: '/results',
+        element: <SearchResultList />
       }
     ]
   }]

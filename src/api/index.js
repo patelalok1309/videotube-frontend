@@ -22,12 +22,40 @@ export const loginUser = async (formData) => {
     }
 };
 
-export const getAllVideos = async () => {
+
+export const logoutUser = async () => {
+    try {
+        const response = await axios.post(`${baseURL}/users/logout`, {}, {
+            headers: {
+                Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error occurred:", error);
+    }
+}
+
+
+export const refreshAccessToken = async () => {
+    try {
+        const response = await axios.post(`${baseURL}/users/refresh-token`, {}, {
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error occurred:", error);
+    }
+}
+
+export const getAllVideos = async (params = null) => {
+
     try {
         const response = await axios.get(`${baseURL}/videos`, {
             headers: {
                 Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
             },
+            params,
             withCredentials: true,
         });
         return response.data.data;
@@ -169,14 +197,28 @@ export const getVideoComments = async (videoId) => {
     }
 }
 
-export const updateComment = async (videoId, content) => {
+export const updateComment = async (commentId, content) => {
     try {
-        const response = await axios.patch(`${baseURL}/comments/c/${videoId}`, { content }, {
+        const response = await axios.patch(`${baseURL}/comments/c/${commentId}`, { content }, {
             headers: {
                 Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
             }
         })
         return response.data;
+    } catch (error) {
+        console.error("Error occurred:", error);
+    }
+}
+
+export const deleteComment = async (commentId) => {
+    try {
+        const response = await axios.delete(`${baseURL}/comments/c/${commentId}`, {
+            headers: {
+                Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
+            }
+        })
+        return response?.data;
+        console.log(response.data);
     } catch (error) {
         console.error("Error occurred:", error);
     }

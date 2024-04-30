@@ -25,7 +25,7 @@ function App() {
     <div className='bg-[#0f0f0f] text-white ' >
       <div className="flex">
         <div className="relative">
-          <div className={`w-[30%] bg-[#0b0b0b] ${!sidebarVisible ? 'hidden' : ''} absolute top-0 left-0 z-10`} >
+          <div className={`w-[25%] bg-[#0b0b0b] ${!sidebarVisible ? 'hidden' : ''} absolute top-0 left-0 z-10`} >
             <Sidebar />
           </div>
         </div>

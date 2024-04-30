@@ -10,7 +10,8 @@ const initialState = {
         alertMessage: "",
     },
     videos: [],
-    searchText : ''
+    searchTerm: '',
+    loading: false,
 }
 
 const layoutSlice = createSlice({
@@ -30,10 +31,16 @@ const layoutSlice = createSlice({
         },
         pushVideos: (state, action) => {
             state.videos.push(action.payload)
+        },
+        setSearchTerm: (state, action) => {
+            state.searchTerm = action.payload
+        },
+        setLoading: (state, action) => {
+            state.loading = action.payload
         }
     }
 })
 
-export const { toggleSidebar, setSidebarVisibility, setAlert , pushVideos} = layoutSlice.actions;
+export const { toggleSidebar, setSidebarVisibility, setAlert, pushVideos, setSearchTerm } = layoutSlice.actions;
 
 export default layoutSlice.reducer;

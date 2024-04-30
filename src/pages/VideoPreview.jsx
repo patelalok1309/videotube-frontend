@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getSingleVideo, getVideoComments, incrementVideoViews, submitComment, toggleLike, toggleSubscribe, updateComment } from "../api";
+import { deleteComment, getSingleVideo, getVideoComments, incrementVideoViews, submitComment, toggleLike, toggleSubscribe, updateComment } from "../api";
 import ReactPlayer from "react-player";
 import { LikeDislikeButton, RoundedBtn, Verticledots } from "../components/Buttons";
 import { humanReadableDateTime } from "../utils/dateConverter";
@@ -99,12 +99,22 @@ function VideoPreview() {
     }
 
     const handleUpdateComment = (commentId) => {
-        console.log('content', commentEditContent);
         updateComment(commentId, commentEditContent)
             .then(res => {
                 console.log('res', res)
                 setCommentEditContent('')
                 setCommentEditIndex(null)
+                getVideoComments(videoId)
+                    .then(response => {
+                        setCommentsList(response?.data?.docs)
+                        setTotalComments(response?.data.totalDocs)
+                    })
+            })
+    }
+
+    const handleDeleteComment = (commentId) => {
+        deleteComment(commentId)
+            .then(res => {
                 getVideoComments(videoId)
                     .then(response => {
                         setCommentsList(response?.data?.docs)
@@ -119,7 +129,7 @@ function VideoPreview() {
                 setCommentsList(response?.data?.docs)
                 setTotalComments(response?.data.totalDocs)
             })
-    }, [updateComment, submitComment])
+    }, [updateComment, submitComment , deleteComment])
 
     return (
 
@@ -137,7 +147,7 @@ function VideoPreview() {
                     />
                 </div>
                 <div className="flex mt-3 justify-start items-center gap-2  ">
-                    <p className="text-5xl">{video?.title}</p>
+                    <p className="text-4xl">{video?.title}</p>
                 </div>
                 <div className="mt-2">
                     <p>{video?.description}</p>
@@ -153,10 +163,10 @@ function VideoPreview() {
                         backgroundSize: "cover",
                     }}>
                 </div>
-                <p className="ml-4 font-bold text-2xl">{video?.owner?.fullName}</p>
+                <p className="ml-4 font-bold text-xl">{video?.owner?.fullName}</p>
                 <RoundedBtn
                     btnText={`${isSubscribed ? 'Unsubscribe' : 'Subscribe'}`}
-                    classNames={`text-3xl m-4 font-semibold py-6 
+                    classNames={`text-2xl m-4 font-semibold py-5 
                     ${isSubscribed ? ' bg-gray-300 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50' : 'bg-gray-200 text-gray-950 hover:bg-gray-300'}`}
                     onClick={(param1) => handleSubscribe(param1)}
                     param1={video?.owner?._id}
@@ -165,17 +175,17 @@ function VideoPreview() {
             </div>
 
             {/* Views , time and description */}
-            <div className="w-full md:w-[65%] min-h-16 mt-2 rounded-2xl bg-gray-300 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white transition-colors duration-300 px-4 py-2">
+            <div className="w-full md:w-[65%] min-h-16 mt-2 rounded-2xl bg-gray-500 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white transition-colors duration-300 px-4 py-2">
                 <div className="flex gap-4 items-center">
-                    <p className="text-2xl">{video?.views} views</p>
-                    <span className="text-2xl"> {humanReadableDateTime(video?.createdAt)} </span>
+                    <p className="text-lg">{video?.views} views</p>
+                    <span className="text-lg"> {humanReadableDateTime(video?.createdAt)} </span>
                 </div>
                 <p className="text-md mt-4">{video?.description}</p>
             </div>
 
             {/* Comment section  */}
             <section className="w-full md:w-[65%]">
-                <h2 className="text-3xl mt-6 font-semibold">{totalComments} Comments</h2>
+                <h2 className="text-xl mt-6 font-semibold">{totalComments} Comments</h2>
 
                 <div className="flex items-center mt-4">
                     <div className="h-14 w-14 mb-5 rounded-full" style={{
@@ -208,7 +218,7 @@ function VideoPreview() {
                             {/* Cancel comment button  */}
                             <RoundedBtn
                                 btnText={"Clear"}
-                                classNames={`text-3xl font-semibold  py-6 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50 flex items-center justify-center hover:bg-gray-500`}
+                                classNames={`text-md font-semibold  py-6 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50 flex items-center justify-center hover:bg-gray-500`}
                                 onClick={() => setComment("")}
                                 disabled={comment.length === 0}
                             />
@@ -217,7 +227,7 @@ function VideoPreview() {
                             <RoundedBtn
                                 id={'submitCommentBtn'}
                                 btnText={"Comment"}
-                                classNames={`text-3xl font-semibold  py-6 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50 flex items-center justify-center ${comment.length === 0 ? 'bg-gray-300 cursor-not-allowed ' : 'bg-[#3ea6ff]'}`}
+                                classNames={`text-md font-semibold  py-6 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50 flex items-center justify-center ${comment.length === 0 ? 'bg-gray-300 cursor-not-allowed ' : 'bg-[#3ea6ff]'}`}
                                 onClick={handleSubmitComment}
                                 disabled={comment.length === 0}
                             />
@@ -231,7 +241,7 @@ function VideoPreview() {
                     {commentsList?.map(comment => (
                         <div key={comment._id} className="flex items-center justify-between mt-8 w-full">
                             <div className="flex">
-                                <div className="h-14 w-14 rounded-full" style={{
+                                <div className="h-12 w-12 rounded-full" style={{
                                     backgroundImage: `url(${comment.owner.avatar})`,
                                     backgroundSize: "cover",
                                 }}>
@@ -244,7 +254,7 @@ function VideoPreview() {
                                             {/* Submit comment button  */}
                                             <RoundedBtn
                                                 btnText={"Save"}
-                                                classNames={`text-3xl font-semibold  py-6 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50 flex items-center justify-center ${commentEditContent.length === 0 ? 'bg-gray-300 cursor-not-allowed ' : 'bg-[#3ea6ff]'}`}
+                                                classNames={`text-lg font-semibold  py-6 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50 flex items-center justify-center ${commentEditContent.length === 0 ? 'bg-gray-300 cursor-not-allowed ' : 'bg-[#3ea6ff]'}`}
                                                 onClick={() => handleUpdateComment(comment._id)}
                                                 disabled={commentEditContent.length === 0}
                                             />
@@ -252,7 +262,7 @@ function VideoPreview() {
                                             {/* Cancel comment button  */}
                                             <RoundedBtn
                                                 btnText={"Clear"}
-                                                classNames={`text-3xl font-semibold  py-6 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50 flex items-center justify-center hover:bg-gray-500`}
+                                                classNames={`text-lg font-semibold  py-6 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50 flex items-center justify-center hover:bg-gray-500`}
                                                 onClick={() => {
                                                     setCommentEditContent("")
                                                 }}
@@ -264,12 +274,12 @@ function VideoPreview() {
                                     :
                                     // Display Comment 
                                     <div className="ml-6">
-                                        <div className="text-xl">
+                                        <div className="text-lg">
                                             <span className="text-gray-300">@{comment.owner.username}</span>
-                                            <span className="text-gray-400 text-lg ml-3">{humanReadableDateTime(comment.createdAt)}</span>
+                                            <span className="text-gray-400 text-sm ml-3">{humanReadableDateTime(comment.createdAt)}</span>
                                         </div>
                                         <div className="mt-1">
-                                            <p className="text-2xl text-gray-100">{comment.content}</p>
+                                            <p className="text-xl text-gray-100">{comment.content}</p>
                                         </div>
                                     </div>
                                 }
@@ -292,7 +302,9 @@ function VideoPreview() {
                                             <p className="px-2">Edit</p>
                                         </button>
 
-                                        <button className="hover:bg-gray-500 px-4 py-2 text-xl flex items-center justify-center gap-3">
+                                        <button
+                                            onClick={() => handleDeleteComment(comment._id)}
+                                            className="hover:bg-gray-500 px-4 py-2 text-xl flex items-center justify-center gap-3">
                                             <MdDeleteOutline size={32} />
                                             <p className="px-2">Delete</p>
                                         </button>
