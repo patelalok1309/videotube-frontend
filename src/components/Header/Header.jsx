@@ -48,6 +48,12 @@ function Header() {
             </NavLink>
           </div>
 
+          <div className="w-1/2">
+            <div className="rounded-3xl border-2 border-[#222222] p-[1px] bg-[#222222]">
+              <input type="text" className="px-4 py-2 bg-[#121212] w-[90%] border-gray-600 rounded-l-3xl focus:border-gray-600" />
+            </div>
+          </div>
+
           <ul className="flex ml-auto flex-wrap text-sm md:text-2xl">
             {navItems.map((item) =>
               item.active ? (
@@ -64,7 +70,7 @@ function Header() {
 
             <li className="flex justify-center items-center">
               <div
-                className="h-16 w-16 rounded-full"
+                className="h-12 w-12 rounded-full"
                 style={{
                   backgroundImage: `url(${authUser?.avatar})`,
                   backgroundSize: 'cover'

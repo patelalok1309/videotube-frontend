@@ -1,2 +1,6 @@
-export { default as RoundedBtn} from './RoundedBtn'
-export { default as SidebarTogglerBtn} from './SidebarTogglerBtn'
+export { default as RoundedBtn } from './RoundedBtn'
+export { default as SidebarTogglerBtn } from './SidebarTogglerBtn'
+export { default as LikeDislikeButton } from './LikeDislikeButton'
+export { default as Verticledots } from './Verticledots'
+export { default as EditSvg } from './EditSvg'
+export { default as DeleteSvg } from './DeleteSvg'

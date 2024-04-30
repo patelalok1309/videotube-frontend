@@ -1,21 +1,27 @@
 import React, { useEffect, useState } from 'react'
 import { getAllVideos } from '../api';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { setSidebarVisibility } from '../store/layoutSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { pushVideos } from '../store/layoutSlice';
 
 
 function Home() {
 
   const [videos, setVideos] = useState([]);
+  const dispatch = useDispatch();
+  const videosOnStore = useSelector(state => state.layoutSlice.videos)
 
   useEffect(() => {
-    const res = getAllVideos()
-      .then((response) => {
-        setVideos(response.docs)
-      })
-  }, [setVideos])
-
+    if (videosOnStore.length === 0) {
+      const res = getAllVideos()
+        .then((response) => {
+          setVideos(response.docs)
+          dispatch(pushVideos(response.docs))
+        })
+    } else {
+      setVideos(videosOnStore[0])
+    }
+  }, [])
 
   return (
     <div className='px-10 py-4 md:px-16 md:py-10  overflow-y-auto '>

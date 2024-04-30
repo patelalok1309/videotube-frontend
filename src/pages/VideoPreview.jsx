@@ -1,59 +1,151 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getSingleVideo, isUserSubscribed, toggleSubscribe } from "../api";
+import { getSingleVideo, getVideoComments, incrementVideoViews, submitComment, toggleLike, toggleSubscribe, updateComment } from "../api";
 import ReactPlayer from "react-player";
-import { RoundedBtn } from "../components/Buttons";
-
+import { LikeDislikeButton, RoundedBtn, Verticledots } from "../components/Buttons";
+import { humanReadableDateTime } from "../utils/dateConverter";
+import { useSelector } from "react-redux";
+import { MdDeleteOutline, MdOutlineEdit } from "react-icons/md";
 
 function VideoPreview() {
     const { videoId } = useParams();
     const [video, setVideo] = useState(null);
     const [isSubscribed, setIsSubscribed] = useState(false)
+    const [liked, setLiked] = useState(false)
+    const [comment, setComment] = useState('')
+    const [commentsList, setCommentsList] = useState([])
+    const [totalComments, setTotalComments] = useState(0)
+    const [commentDropdownState, setCommentDropdownState] = useState({})
+    const [commentEditIndex, setCommentEditIndex] = useState(null)
+    const [commentEditContent, setCommentEditContent] = useState('')
+
+    const authUser = useSelector(state => state.authSlice.auth.userData)
 
     useEffect(() => {
-        getSingleVideo(videoId)
-            .then((response) => {
-                setVideo(response?.data);
-            });
+        if (videoId) {
+            getSingleVideo(videoId)
+                .then((response) => {
+                    setVideo(response?.data);
+                    setLiked(response?.data.liked)
+                    setIsSubscribed(response?.data.isUserSubscriberOfChannel)
+                });
+
+            getVideoComments(videoId)
+                .then(response => {
+                    setCommentsList(response?.data?.docs)
+                    setTotalComments(response?.data.totalDocs)
+                })
+        }
     }, []);
 
+
+
+    const handleToggleLike = () => {
+        toggleLike('v', videoId)
+            .then(res => {
+                setLiked(res.data.likeStatus)
+            })
+            .catch(err => console.error(err))
+    }
 
     const handleSubscribe = (channelId) => {
         toggleSubscribe(channelId)
             .then((response) => {
-                setIsSubscribed(response.data)
+                console.log('response.data', response.data);
+                setIsSubscribed(response?.data.subscribed)
+            })
+    }
+
+    const handleIncrementViews = () => {
+        if (video) {
+            incrementVideoViews(videoId)
+                .then(res => {
+                    console.log('res', res);
+                })
+        }
+    }
+
+    const handleSubmitComment = () => {
+        setComment("")
+        if (video) {
+            submitComment(video?._id, comment)
+                .then(res => {
+                    if (res.success) {
+                        getVideoComments(videoId)
+                            .then(response => {
+                                setCommentsList(response?.data?.docs)
+                                setTotalComments(response?.data.totalDocs)
+                            })
+                    }
+                })
+        }
+    }
+
+    const toggleCommentDropdown = (itemId) => {
+        setCommentDropdownState(prevStates => ({
+            ...prevStates,
+            [itemId]: !prevStates[itemId]
+        }))
+    }
+
+    const handleEditComment = (index, content) => {
+
+        if (commentEditIndex === index) {
+            setCommentEditIndex(null)
+            return;
+        }
+        setCommentEditIndex(index)
+        setCommentEditContent(content)
+    }
+
+    const handleUpdateComment = (commentId) => {
+        console.log('content', commentEditContent);
+        updateComment(commentId, commentEditContent)
+            .then(res => {
+                console.log('res', res)
+                setCommentEditContent('')
+                setCommentEditIndex(null)
+                getVideoComments(videoId)
+                    .then(response => {
+                        setCommentsList(response?.data?.docs)
+                        setTotalComments(response?.data.totalDocs)
+                    })
             })
     }
 
     useEffect(() => {
-        if (video) {
-            isUserSubscribed(video?.owner?._id)
-                .then((response) => {
-                    setIsSubscribed(!response?.data)
-                })
-        }
-    }, [setVideo, handleSubscribe])
-
+        getVideoComments(videoId)
+            .then(response => {
+                setCommentsList(response?.data?.docs)
+                setTotalComments(response?.data.totalDocs)
+            })
+    }, [updateComment, submitComment])
 
     return (
-        <div className="px-16 py-8">
-            <div className="w-[65%] h-[50%] rounded-lg">
-                <ReactPlayer
-                    url={`${video?.videoFile}`}
-                    width="100%"
-                    height="60vh"
-                    controls
-                    style={{ background: "black", "borderRadius": "20px", padding: '0 1rem' }}
-                />
-            </div>
-            <div className="flex mt-3 justify-start items-center gap-2  ">
-                <p className="text-5xl">{video?.title}</p>
-            </div>
-            <div className="mt-2">
-                <p>{video?.description}</p>
-            </div>
 
-            <div className="mt-3 flex items-center">
+        <div className="px-4 py-2 md:px-16 md:py-8">
+            {/* video Player section */}
+            <section>
+                <div className="w-full md:w-[65%] h-[50%] rounded-lg">
+                    <ReactPlayer
+                        onEnded={handleIncrementViews}
+                        url={`${video?.videoFile}`}
+                        width="100%"
+                        height="60vh"
+                        controls
+                        style={{ background: "black", "borderRadius": "20px", padding: '0 1rem' }}
+                    />
+                </div>
+                <div className="flex mt-3 justify-start items-center gap-2  ">
+                    <p className="text-5xl">{video?.title}</p>
+                </div>
+                <div className="mt-2">
+                    <p>{video?.description}</p>
+                </div>
+            </section>
+
+            {/* channel avatar , subscribe/unsubscribe and like/unlike button */}
+            <div className="mt-3 flex items-center flex-wrap">
                 <div
                     className="h-14 w-14 rounded-full"
                     style={{
@@ -61,13 +153,156 @@ function VideoPreview() {
                         backgroundSize: "cover",
                     }}>
                 </div>
+                <p className="ml-4 font-bold text-2xl">{video?.owner?.fullName}</p>
                 <RoundedBtn
-                    btnText={`${isSubscribed ? 'Subscribe' : 'Unsubscribe'}`}
-                    classNames={` ml-4 font-semibold py-6 ${isSubscribed ? 'bg-gray-200 text-gray-950 hover:bg-gray-300' : ' bg-gray-300 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50'}`}
+                    btnText={`${isSubscribed ? 'Unsubscribe' : 'Subscribe'}`}
+                    classNames={`text-3xl m-4 font-semibold py-6 
+                    ${isSubscribed ? ' bg-gray-300 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50' : 'bg-gray-200 text-gray-950 hover:bg-gray-300'}`}
                     onClick={(param1) => handleSubscribe(param1)}
                     param1={video?.owner?._id}
                 />
+                <LikeDislikeButton liked={liked} handleLike={handleToggleLike} />
             </div>
+
+            {/* Views , time and description */}
+            <div className="w-full md:w-[65%] min-h-16 mt-2 rounded-2xl bg-gray-300 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white transition-colors duration-300 px-4 py-2">
+                <div className="flex gap-4 items-center">
+                    <p className="text-2xl">{video?.views} views</p>
+                    <span className="text-2xl"> {humanReadableDateTime(video?.createdAt)} </span>
+                </div>
+                <p className="text-md mt-4">{video?.description}</p>
+            </div>
+
+            {/* Comment section  */}
+            <section className="w-full md:w-[65%]">
+                <h2 className="text-3xl mt-6 font-semibold">{totalComments} Comments</h2>
+
+                <div className="flex items-center mt-4">
+                    <div className="h-14 w-14 mb-5 rounded-full" style={{
+                        backgroundImage: `url(${authUser?.avatar})`,
+                        backgroundSize: "cover",
+                    }}>
+                    </div>
+
+
+                    {/* Post comment */}
+                    <div className="w-full">
+                        <input
+                            type="text"
+                            name="comment"
+                            id="comment"
+                            className="border-b-2 border-gray-700  focus:border-gray-300 pb-2 text-lg bg-transparent outline-none  ml-4 w-full"
+                            placeholder="Add a comment"
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.ctrlKey && e.key === 'Enter') {
+                                    e.preventDefault();
+                                    document.getElementById('submitCommentBtn').click();
+                                }
+                            }}
+                        />
+
+                        <div className="flex justify-end items-center mt-2 gap-4">
+
+                            {/* Cancel comment button  */}
+                            <RoundedBtn
+                                btnText={"Clear"}
+                                classNames={`text-3xl font-semibold  py-6 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50 flex items-center justify-center hover:bg-gray-500`}
+                                onClick={() => setComment("")}
+                                disabled={comment.length === 0}
+                            />
+
+                            {/* Submit comment button  */}
+                            <RoundedBtn
+                                id={'submitCommentBtn'}
+                                btnText={"Comment"}
+                                classNames={`text-3xl font-semibold  py-6 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50 flex items-center justify-center ${comment.length === 0 ? 'bg-gray-300 cursor-not-allowed ' : 'bg-[#3ea6ff]'}`}
+                                onClick={handleSubmitComment}
+                                disabled={comment.length === 0}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+
+                {/* Comment lists  */}
+                <div className="w-full mt-10">
+                    {commentsList?.map(comment => (
+                        <div key={comment._id} className="flex items-center justify-between mt-8 w-full">
+                            <div className="flex">
+                                <div className="h-14 w-14 rounded-full" style={{
+                                    backgroundImage: `url(${comment.owner.avatar})`,
+                                    backgroundSize: "cover",
+                                }}>
+                                </div>
+                                {commentEditIndex === comment._id ?
+                                    // Comment updation form 
+                                    <div className="ml-6 w-full flex">
+                                        <input type="text" id="comment" className="border-b-2 border-gray-700  focus:border-gray-300 pb-2 text-lg bg-transparent outline-none  ml-4 w-full" placeholder="Edit a comment" value={commentEditContent} onChange={(e) => setCommentEditContent(e.target.value)} />
+                                        <div className="flex gap-2">
+                                            {/* Submit comment button  */}
+                                            <RoundedBtn
+                                                btnText={"Save"}
+                                                classNames={`text-3xl font-semibold  py-6 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50 flex items-center justify-center ${commentEditContent.length === 0 ? 'bg-gray-300 cursor-not-allowed ' : 'bg-[#3ea6ff]'}`}
+                                                onClick={() => handleUpdateComment(comment._id)}
+                                                disabled={commentEditContent.length === 0}
+                                            />
+
+                                            {/* Cancel comment button  */}
+                                            <RoundedBtn
+                                                btnText={"Clear"}
+                                                classNames={`text-3xl font-semibold  py-6 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50 flex items-center justify-center hover:bg-gray-500`}
+                                                onClick={() => {
+                                                    setCommentEditContent("")
+                                                }}
+                                                disabled={commentEditContent.length === 0}
+                                            />
+
+                                        </div>
+                                    </div>
+                                    :
+                                    // Display Comment 
+                                    <div className="ml-6">
+                                        <div className="text-xl">
+                                            <span className="text-gray-300">@{comment.owner.username}</span>
+                                            <span className="text-gray-400 text-lg ml-3">{humanReadableDateTime(comment.createdAt)}</span>
+                                        </div>
+                                        <div className="mt-1">
+                                            <p className="text-2xl text-gray-100">{comment.content}</p>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <div className="mr-4 relative">
+                                <button onClick={() => toggleCommentDropdown(comment._id)}>
+                                    <Verticledots />
+                                </button>
+
+                                {commentDropdownState[comment._id] && (comment.owner._id === authUser._id) && (
+                                    <div className="rounded-lg outline-none bg-gray-500 bg-opacity-25 top-100 right-100 py-2 absolute flex flex-col backdrop-blur-2xl z-10">
+                                        <button
+                                            onClick={() => {
+                                                handleEditComment(comment._id, comment.content)
+                                                toggleCommentDropdown(comment._id)
+                                            }}
+                                            className="hover:bg-gray-500 text-xl flex items-center justify-start gap-3 py-2 px-4">
+                                            <MdOutlineEdit size={32} />
+                                            <p className="px-2">Edit</p>
+                                        </button>
+
+                                        <button className="hover:bg-gray-500 px-4 py-2 text-xl flex items-center justify-center gap-3">
+                                            <MdDeleteOutline size={32} />
+                                            <p className="px-2">Delete</p>
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </section>
         </div>
     );
 }

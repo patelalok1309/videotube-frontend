@@ -89,3 +89,95 @@ export const publishVideo = async (formData) => {
         console.error("Error occurred:", error);
     }
 }
+
+export const getCurrentUser = async () => {
+    try {
+        const response = await axios.get(`${baseURL}/users/current-user`, {
+            headers: {
+                Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`
+            }
+        })
+        return response.data;
+    } catch (error) {
+        console.error("Error occurred:", error);
+    }
+}
+
+export const isUserLikedVideo = async (videoId) => {
+    try {
+        const response = await axios.get(`${baseURL}/likes/check/v/${videoId}`, {
+            headers: {
+                Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`
+            }
+        })
+        return response.data;
+    } catch (error) {
+        console.error("Error occurred:", error);
+    }
+}
+
+export const toggleLike = async (type, id) => {
+    try {
+        const response = await axios.post(`${baseURL}/likes/toggle/${type}/${id}`, {}, {
+            headers: {
+                Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`
+            }
+        })
+        return response.data;
+    } catch (error) {
+        console.error("Error occurred:", error);
+    }
+}
+
+export const incrementVideoViews = async (videoId) => {
+    try {
+        const response = await axios.patch(`${baseURL}/videos/increment-view/${videoId}`, {}, {
+            headers: {
+                Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`
+            }
+        })
+        return response.data;
+    } catch (error) {
+        console.error("Error occurred:", error);
+    }
+}
+
+
+export const submitComment = async (videoId, formData) => {
+    try {
+        const response = await axios.post(`${baseURL}/comments/${videoId}`, { content: formData }, {
+            headers: {
+                Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
+            }
+        })
+        return response.data;
+    } catch (error) {
+        console.error("Error occurred:", error);
+    }
+}
+
+export const getVideoComments = async (videoId) => {
+    try {
+        const response = await axios.get(`${baseURL}/comments/${videoId}`, {
+            headers: {
+                Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
+            }
+        })
+        return response.data;
+    } catch (error) {
+        console.error("Error occurred:", error);
+    }
+}
+
+export const updateComment = async (videoId, content) => {
+    try {
+        const response = await axios.patch(`${baseURL}/comments/c/${videoId}`, { content }, {
+            headers: {
+                Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
+            }
+        })
+        return response.data;
+    } catch (error) {
+        console.error("Error occurred:", error);
+    }
+}

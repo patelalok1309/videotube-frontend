@@ -11,3 +11,7 @@ body{
     overflow-y: auto;
     background-color: #0f0f0f;
 }
+
+video {
+    border-radius: 20px;
+}

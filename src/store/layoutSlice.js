@@ -5,10 +5,12 @@ const initialState = {
         isVisible: false
     },
     alert: {
-        alertVisible : false,
+        alertVisible: false,
         alertType: "",
-        alertMessage : "",
-    }
+        alertMessage: "",
+    },
+    videos: [],
+    searchText : ''
 }
 
 const layoutSlice = createSlice({
@@ -21,14 +23,17 @@ const layoutSlice = createSlice({
         setSidebarVisibility: (state, action) => {
             state.sidebar.isVisible = action.payload
         },
-        setAlert : (state , action) => {
+        setAlert: (state, action) => {
             state.alert.alertVisible = action.payload.alert.alertVisible
             state.alert.alertType = action.payload.alert.alertType
             state.alert.alertMessage = action.payload.alert.alertMessage
+        },
+        pushVideos: (state, action) => {
+            state.videos.push(action.payload)
         }
     }
 })
 
-export const { toggleSidebar, setSidebarVisibility, setAlert } = layoutSlice.actions;
+export const { toggleSidebar, setSidebarVisibility, setAlert , pushVideos} = layoutSlice.actions;
 
 export default layoutSlice.reducer;
