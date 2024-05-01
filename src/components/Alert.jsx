@@ -11,7 +11,7 @@ const Alert = () => {
     const [showAlert, setShowAlert] = useState(true);
 
     const handleClose = () => {
-        
+
         dispatch(
             setAlert({
                 alert: {
@@ -26,7 +26,7 @@ const Alert = () => {
 
     return (
         showAlert && (
-            <div className={`p-4 mx-16 my-4 rounded ${type === 'success' ? 'bg-green-200' : type === 'error' ? 'bg-red-200' : 'bg-yellow-200'}`}>
+            <div className={`p-4 mx-16 my-4 rounded fixed top-100 right-0 z-50 ${type === 'success' ? 'bg-green-200' : type === 'error' ? 'bg-red-200' : 'bg-yellow-200'}`}>
                 <div className="flex justify-between items-center">
                     <div className="flex-1">
                         <p className="text-lg text-gray-950">{message}</p>

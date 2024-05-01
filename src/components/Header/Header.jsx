@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { NavLink, redirect, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { SidebarTogglerBtn } from '../Buttons'
@@ -14,6 +14,8 @@ function Header() {
   const [searchText, setSearchText] = useState('')
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const inputRef = useRef(null);
 
   const navItems = [
     {
@@ -52,6 +54,19 @@ function Header() {
       })
   }
 
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (e.key === '/') {
+        inputRef.current.focus();
+      }
+    }
+    document.addEventListener('keydown', handleKeyPress)
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [])
+
   return (
     <header className="py-2 px-16 bg-[#0f0f0f] shadow shadow-[#0c0c0c] sticky top-0 z-50">
       <nav>
@@ -71,11 +86,20 @@ function Header() {
 
               {/* searchBar  */}
               <input
+                ref={inputRef}
                 value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
+                onChange={(e) => {
+                  setSearchText(e.target.value)
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    document.getElementById('searchBtn').click();
+                  }
+                }}
                 type="text"
                 className="px-4 py-2 bg-[#121212] w-[90%] border-gray-600 rounded-l-3xl focus:border-gray-600 @apply focus:outline-gray-900 !important" />
-              <button onClick={handleSearchTerm} className="rounded-r-3xl flex justify-center items-center px-5">
+              <button id="searchBtn" onClick={handleSearchTerm} className="rounded-r-3xl flex justify-center items-center px-5">
                 <IoIosSearch className="w-full h-full " size={24} />
               </button>
             </div>

@@ -9,7 +9,7 @@ export const registerUser = async (formData) => {
         });
         return response.data;
     } catch (error) {
-        console.error("Error occurred:", error);
+        return error.response.data;
     }
 };
 
@@ -26,9 +26,7 @@ export const loginUser = async (formData) => {
 export const logoutUser = async () => {
     try {
         const response = await axios.post(`${baseURL}/users/logout`, {}, {
-            headers: {
-                Authorization: `Bearer ${window.localStorage.getItem('accessToken')}`
-            }
+            withCredentials : true
         });
         return response.data;
     } catch (error) {
@@ -122,8 +120,9 @@ export const getCurrentUser = async () => {
     try {
         const response = await axios.get(`${baseURL}/users/current-user`, {
             headers: {
-                Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`
-            }
+                Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
+            },
+            withCredentials:true
         })
         return response.data;
     } catch (error) {

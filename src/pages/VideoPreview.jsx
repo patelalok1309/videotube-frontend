@@ -129,7 +129,7 @@ function VideoPreview() {
                 setCommentsList(response?.data?.docs)
                 setTotalComments(response?.data.totalDocs)
             })
-    }, [updateComment, submitComment , deleteComment])
+    }, [updateComment, submitComment, deleteComment])
 
     return (
 
@@ -286,7 +286,9 @@ function VideoPreview() {
                             </div>
 
                             <div className="mr-4 relative">
-                                <button onClick={() => toggleCommentDropdown(comment._id)}>
+                                <button
+                                    className={`${comment.owner._id === authUser._id ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+                                    onClick={() => toggleCommentDropdown(comment._id)}>
                                     <Verticledots />
                                 </button>
 

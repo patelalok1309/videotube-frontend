@@ -1,9 +1,14 @@
 import { useState } from 'react';
 import { BsPerson, BsPersonCheck, BsLock, BsEnvelope } from 'react-icons/bs';
 import { registerUser } from '../api';
-import { LoadingSpinner } from '../components'
+import { Alert, LoadingSpinner } from '../components'
+import { useDispatch } from 'react-redux';
+import { setAlert } from '../store/layoutSlice';
 
 const Signup = () => {
+
+    const dispatch = useDispatch();
+
     const [formData, setFormData] = useState({
         username: '',
         fullName: '',
@@ -52,7 +57,9 @@ const Signup = () => {
 
         registerUser(formDataToSend)
             .then(res => {
-                if (res) {
+                console.log('res', res);
+
+                if (res.success) {
                     setFormData({
                         username: '',
                         fullName: '',
@@ -63,10 +70,18 @@ const Signup = () => {
                     })
                     setIsLoading(false);
                 } else {
+                    dispatch(setAlert({
+                        alert: {
+                            alertVisible: true,
+                            alertMessage: res.msg,
+                            alertType: 'error'
+                        }
+                    }))
                     setIsLoading(false)
                 }
             })
             .catch(err => {
+                console.log('err', err);
                 setIsLoading(false)
             })
     };
