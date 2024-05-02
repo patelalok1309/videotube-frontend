@@ -50,6 +50,7 @@ function Header() {
         if (res.success) {
           window.localStorage.removeItem('accessToken');
           dispatch(logout())
+          navigate('/login')
         }
       })
   }

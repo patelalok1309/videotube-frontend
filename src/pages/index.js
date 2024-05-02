@@ -1,3 +1,5 @@
 export { default as Home } from './Home'
 export { default as VideoPreview } from './VideoPreview'
 export { default as PublishVideo } from './PublishVideo'
+export { default as ChannelPreview } from './ChannelPreview'
+export { default as PageNotFound } from './PageNotFound'

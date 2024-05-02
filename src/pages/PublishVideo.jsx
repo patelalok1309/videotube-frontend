@@ -43,6 +43,7 @@ function PublishVideo() {
                         alertType: 'success'
                     }
                 }))
+                setIsLoading(false)
                 error = true;
                 break;
             }

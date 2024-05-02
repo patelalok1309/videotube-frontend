@@ -6,6 +6,7 @@ import Logo from "./Logo";
 import LoadingSpinner from "./LoadingSpinner";
 import SidebarTogglerBtn from "./Buttons/SidebarTogglerBtn";
 import Alert from "./Alert";
+import VideoLayout from "./VideoLayout";
 
 export {
     Sidebar,
@@ -15,5 +16,6 @@ export {
     Logo,
     LoadingSpinner,
     SidebarTogglerBtn,
-    Alert
+    Alert,
+    VideoLayout
 }

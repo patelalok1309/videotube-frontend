@@ -2,6 +2,7 @@ import axios from "axios";
 
 const baseURL = "http://localhost:8000/api/v1";
 
+axios.defaults.withCredentials = true;
 export const registerUser = async (formData) => {
     try {
         const response = await axios.post(`${baseURL}/users/register`, formData, {
@@ -26,11 +27,26 @@ export const loginUser = async (formData) => {
 export const logoutUser = async () => {
     try {
         const response = await axios.post(`${baseURL}/users/logout`, {}, {
-            withCredentials : true
+            headers: {
+                Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
+            },
+            withCredentials: true
         });
         return response.data;
     } catch (error) {
         console.error("Error occurred:", error);
+    }
+}
+
+export const updateAccountDetails = async (formData) => {
+    try {
+        const response = await axios.patch(`${baseURL}/users/update-account`, formData, {
+            withCredentials: true
+        });
+        console.log(response);
+        return response.data;
+    } catch (error) {
+        return error.response.data;
     }
 }
 
@@ -50,13 +66,13 @@ export const getAllVideos = async (params = null) => {
 
     try {
         const response = await axios.get(`${baseURL}/videos`, {
-            headers: {
-                Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
-            },
+            // headers: {
+            //     Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
+            // },
             params,
-            withCredentials: true,
+            withCredentials: true
         });
-        return response.data.data;
+        return response?.data?.data;
     } catch (error) {
         console.error("Error occurred:", error);
     }
@@ -65,9 +81,9 @@ export const getAllVideos = async (params = null) => {
 export const getSingleVideo = async (videoId) => {
     try {
         const response = await axios.get(`${baseURL}/videos/${videoId}`, {
-            headers: {
-                Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
-            },
+            // headers: {
+            //     Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
+            // },
             withCredentials: true,
         });
         return response.data;
@@ -119,10 +135,7 @@ export const publishVideo = async (formData) => {
 export const getCurrentUser = async () => {
     try {
         const response = await axios.get(`${baseURL}/users/current-user`, {
-            headers: {
-                Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
-            },
-            withCredentials:true
+            withCredentials: true
         })
         return response.data;
     } catch (error) {
@@ -217,7 +230,15 @@ export const deleteComment = async (commentId) => {
             }
         })
         return response?.data;
-        console.log(response.data);
+    } catch (error) {
+        console.error("Error occurred:", error);
+    }
+}
+
+export const getChannelDetails = async (channelUsername) => {
+    try {
+        const response = await axios.get(`${baseURL}/users/c/${channelUsername}`)
+        return response.data;
     } catch (error) {
         console.error("Error occurred:", error);
     }

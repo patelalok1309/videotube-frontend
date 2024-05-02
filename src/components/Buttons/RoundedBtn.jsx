@@ -3,7 +3,7 @@ import React from 'react'
 function RoundedBtn({ btnText, classNames, onClick, param1, disabled = false , id }) {
     return (
         <button
-            className={`${classNames}  px-6 h-9 text-xl rounded-3xl  flex items-center justify-center`}
+            className={`${classNames}  px-2 py-1 text-md rounded-3xl  flex items-center justify-center`}
             onClick={() => onClick(param1)}
             disabled={disabled}
             id={id}

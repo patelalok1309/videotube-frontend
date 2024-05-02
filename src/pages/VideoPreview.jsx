@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { deleteComment, getSingleVideo, getVideoComments, incrementVideoViews, submitComment, toggleLike, toggleSubscribe, updateComment } from "../api";
 import ReactPlayer from "react-player";
 import { LikeDislikeButton, RoundedBtn, Verticledots } from "../components/Buttons";
@@ -20,6 +20,14 @@ function VideoPreview() {
     const [commentEditContent, setCommentEditContent] = useState('')
 
     const authUser = useSelector(state => state.authSlice.auth.userData)
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!authUser) {
+            navigate('/login');
+        }
+    }, [authUser, navigate]);
+
 
     useEffect(() => {
         if (videoId) {
@@ -51,7 +59,6 @@ function VideoPreview() {
     const handleSubscribe = (channelId) => {
         toggleSubscribe(channelId)
             .then((response) => {
-                console.log('response.data', response.data);
                 setIsSubscribed(response?.data.subscribed)
             })
     }
@@ -135,15 +142,22 @@ function VideoPreview() {
 
         <div className="px-4 py-2 md:px-16 md:py-8">
             {/* video Player section */}
-            <section>
-                <div className="w-full md:w-[65%] h-[50%] rounded-lg">
+            <section >
+                <div className="w-fit md:w-[65%] h-[50%] rounded-lg">
                     <ReactPlayer
                         onEnded={handleIncrementViews}
                         url={`${video?.videoFile}`}
-                        width="100%"
-                        height="60vh"
+                        width={'100%'}
+                        height={'auto'}
                         controls
-                        style={{ background: "black", "borderRadius": "20px", padding: '0 1rem' }}
+                        style={{
+                            background: "black",
+                            borderRadius: '20px',
+                            '@media (minWidth: 768px)': {
+                                width: '100vw!important', // For devices with max width <= 768px, remove width
+                                height: 'auto'
+                            },
+                        }}
                     />
                 </div>
                 <div className="flex mt-3 justify-start items-center gap-2  ">
@@ -154,19 +168,21 @@ function VideoPreview() {
                 </div>
             </section>
 
-            {/* channel avatar , subscribe/unsubscribe and like/unlike button */}
+            {/* channel avatar , subscribeBtn/unsubscribe and like/unlike button */}
             <div className="mt-3 flex items-center flex-wrap">
-                <div
-                    className="h-14 w-14 rounded-full"
-                    style={{
-                        backgroundImage: `url(${video?.owner?.avatar})`,
-                        backgroundSize: "cover",
-                    }}>
-                </div>
+                <Link to={`/channel/${video?.owner.username}`}>
+                    <div
+                        className="h-14 w-14 rounded-full"
+                        style={{
+                            backgroundImage: `url(${video?.owner?.avatar})`,
+                            backgroundSize: "cover",
+                        }}>
+                    </div>
+                </Link>
                 <p className="ml-4 font-bold text-xl">{video?.owner?.fullName}</p>
                 <RoundedBtn
                     btnText={`${isSubscribed ? 'Unsubscribe' : 'Subscribe'}`}
-                    classNames={`text-2xl m-4 font-semibold py-5 
+                    classNames={`text-md m-4 font-semibold px-4 py-2 
                     ${isSubscribed ? ' bg-gray-300 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50' : 'bg-gray-200 text-gray-950 hover:bg-gray-300'}`}
                     onClick={(param1) => handleSubscribe(param1)}
                     param1={video?.owner?._id}
@@ -213,12 +229,12 @@ function VideoPreview() {
                             }}
                         />
 
-                        <div className="flex justify-end items-center mt-2 gap-4">
+                        <div className="flex justify-end items-center mt-3 gap-4">
 
                             {/* Cancel comment button  */}
                             <RoundedBtn
                                 btnText={"Clear"}
-                                classNames={`text-md font-semibold  py-6 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50 flex items-center justify-center hover:bg-gray-500`}
+                                classNames={`text-md font-semibold  py-2 px-4 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50 flex items-center justify-center hover:bg-gray-500`}
                                 onClick={() => setComment("")}
                                 disabled={comment.length === 0}
                             />
@@ -227,7 +243,7 @@ function VideoPreview() {
                             <RoundedBtn
                                 id={'submitCommentBtn'}
                                 btnText={"Comment"}
-                                classNames={`text-md font-semibold  py-6 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50 flex items-center justify-center ${comment.length === 0 ? 'bg-gray-300 cursor-not-allowed ' : 'bg-[#3ea6ff]'}`}
+                                classNames={`text-md font-semibold px-4 py-2 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50 flex items-center justify-center ${comment.length === 0 ? 'bg-gray-300 cursor-not-allowed ' : 'bg-[#3ea6ff]'}`}
                                 onClick={handleSubmitComment}
                                 disabled={comment.length === 0}
                             />
@@ -239,36 +255,38 @@ function VideoPreview() {
                 {/* Comment lists  */}
                 <div className="w-full mt-10">
                     {commentsList?.map(comment => (
-                        <div key={comment._id} className="flex items-center justify-between mt-8 w-full">
+                        <div key={comment?._id} className="flex items-center justify-between mt-8 w-full">
                             <div className="flex">
-                                <div className="h-12 w-12 rounded-full" style={{
-                                    backgroundImage: `url(${comment.owner.avatar})`,
-                                    backgroundSize: "cover",
-                                }}>
-                                </div>
-                                {commentEditIndex === comment._id ?
+                                <Link to={`/channel/${comment?.owner.username}`}>
+                                    <div className="min-h-12 min-w-12 rounded-full aspect-sq" style={{
+                                        backgroundImage: `url(${comment?.owner.avatar})`,
+                                        backgroundSize: "cover",
+                                        backgroundPosition : "center",
+                                    }}>
+                                    </div>
+                                </Link>
+                                {commentEditIndex === comment?._id ?
                                     // Comment updation form 
                                     <div className="ml-6 w-full flex">
                                         <input type="text" id="comment" className="border-b-2 border-gray-700  focus:border-gray-300 pb-2 text-lg bg-transparent outline-none  ml-4 w-full" placeholder="Edit a comment" value={commentEditContent} onChange={(e) => setCommentEditContent(e.target.value)} />
-                                        <div className="flex gap-2">
+                                        <div className="flex gap-2 justify-center items-center">
                                             {/* Submit comment button  */}
-                                            <RoundedBtn
+                                            <RoundedBtn 
                                                 btnText={"Save"}
-                                                classNames={`text-lg font-semibold  py-6 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50 flex items-center justify-center ${commentEditContent.length === 0 ? 'bg-gray-300 cursor-not-allowed ' : 'bg-[#3ea6ff]'}`}
-                                                onClick={() => handleUpdateComment(comment._id)}
+                                                classNames={`text-md font-semibold px-4 py-1 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50 flex items-center justify-center ${commentEditContent.length === 0 ? 'bg-gray-300 cursor-not-allowed ' : 'bg-[#3ea6ff]'}`}
+                                                onClick={() => handleUpdateComment(comment?._id)}
                                                 disabled={commentEditContent.length === 0}
                                             />
 
                                             {/* Cancel comment button  */}
                                             <RoundedBtn
                                                 btnText={"Clear"}
-                                                classNames={`text-lg font-semibold  py-6 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50 flex items-center justify-center hover:bg-gray-500`}
+                                                classNames={`text-md font-semibold  py-1 px-4 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50 flex items-center justify-center hover:bg-gray-500`}
                                                 onClick={() => {
                                                     setCommentEditContent("")
                                                 }}
                                                 disabled={commentEditContent.length === 0}
                                             />
-
                                         </div>
                                     </div>
                                     :
@@ -287,12 +305,12 @@ function VideoPreview() {
 
                             <div className="mr-4 relative">
                                 <button
-                                    className={`${comment.owner._id === authUser._id ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+                                    className={`${comment?.owner._id === authUser?._id ? 'cursor-pointer' : 'cursor-not-allowed'}`}
                                     onClick={() => toggleCommentDropdown(comment._id)}>
                                     <Verticledots />
                                 </button>
 
-                                {commentDropdownState[comment._id] && (comment.owner._id === authUser._id) && (
+                                {commentDropdownState[comment?._id] && (comment?.owner._id === authUser?._id) && (
                                     <div className="rounded-lg outline-none bg-gray-500 bg-opacity-25 top-100 right-100 py-2 absolute flex flex-col backdrop-blur-2xl z-10">
                                         <button
                                             onClick={() => {
@@ -306,7 +324,7 @@ function VideoPreview() {
 
                                         <button
                                             onClick={() => handleDeleteComment(comment._id)}
-                                            className="hover:bg-gray-500 px-4 py-2 text-xl flex items-center justify-center gap-3">
+                                            className="hover:bg-gragy-500 px-4 py-2 text-xl flex items-center justify-center gap-3">
                                             <MdDeleteOutline size={32} />
                                             <p className="px-2">Delete</p>
                                         </button>

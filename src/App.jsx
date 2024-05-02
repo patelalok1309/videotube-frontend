@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { Alert, Header, Sidebar } from './components'
 import { useDispatch, useSelector } from 'react-redux'
 import { getCurrentUser } from './api'
@@ -9,17 +9,28 @@ import { login as authLogin } from './store/authSlice'
 function App() {
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const sidebarVisible = useSelector((state) => state.layoutSlice.sidebar.isVisible)
   const alertVisible = useSelector((state) => state.layoutSlice.alert.alertVisible)
   const isUserExist = useSelector(state => state.authSlice.auth.status)
 
-  if (!isUserExist) {
-    getCurrentUser()
-      .then(res => {
-        dispatch(authLogin(res.data))
-      })
-      .catch(err => console.error(err))
-  }
+  useEffect(() => {
+    if (!isUserExist) {
+      getCurrentUser()
+        .then(res => {
+          if(res?.success){
+            dispatch(authLogin(res.data));
+          }
+          else{
+            navigate('/login')
+          }
+        })
+        .catch(err => {
+          console.error(err); 
+          navigate('/');
+        });
+    }
+  }, [dispatch, isUserExist]);
 
   return (
     <div className='bg-[#0f0f0f] text-white ' >

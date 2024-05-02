@@ -5,7 +5,7 @@ import { LoadingSpinner } from '../components'
 import { useDispatch } from 'react-redux';
 import { login as authLogin } from '../store/authSlice'
 import Cookies from 'js-cookie';
-import { redirect, useNavigate } from 'react-router-dom';
+import  {  useNavigate }  from 'react-router-dom';
 
 const Login = () => {
 
@@ -43,12 +43,8 @@ const Login = () => {
             email: '',
           })
           setIsLoading(false);
-
-          Cookies.set('accessToken', res.data.accessToken)
-          Cookies.set('refreshToken', res.data.refreshToken)
-          window.localStorage.setItem('accessToken', res.data.accessToken);
           dispatch(authLogin(res.data.user));
-          navigate('/');
+          navigate('/'); 
         } else {
           setIsLoading(false);
         }

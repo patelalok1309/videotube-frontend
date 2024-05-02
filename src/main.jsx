@@ -10,6 +10,9 @@ import Home from './pages/Home.jsx'
 import VideoPreview from './pages/VideoPreview.jsx'
 import PublishVideo from './pages/PublishVideo.jsx'
 import SearchResultList from './pages/SearchResultList.jsx'
+import ChannelPreview from './pages/ChannelPreview.jsx'
+import PageNotFound from './pages/PageNotFound.jsx'
+import UserProfile from './pages/UserProfile.jsx'
 
 const router = createBrowserRouter([
   {
@@ -39,6 +42,18 @@ const router = createBrowserRouter([
       {
         path: '/results',
         element: <SearchResultList />
+      },
+      {
+        path: '/channel/:channelUsername',
+        element : <ChannelPreview />
+      },
+      {
+        path: '/profile',
+        element : <UserProfile />
+      },
+      {
+        path: '*',
+        element : <PageNotFound />
       }
     ]
   }]
