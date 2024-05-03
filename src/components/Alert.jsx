@@ -26,10 +26,16 @@ const Alert = () => {
 
     return (
         showAlert && (
-            <div className={`p-4 mx-16 my-4 rounded fixed top-100 right-0 z-50 ${type === 'success' ? 'bg-green-200' : type === 'error' ? 'bg-red-200' : 'bg-yellow-200'}`}>
+            <div className={`p-4 mx-16 my-4 rounded fixed top-100 right-0 z-50 border-b-2 border-red-500 ${type === 'success' ? 'bg-green-200' : type === 'error' ? 'bg-red-200' : 'bg-yellow-200'}`}>
                 <div className="flex justify-between items-center">
                     <div className="flex-1">
-                        <p className="text-lg text-gray-950">{message}</p>
+                        <p className="text-lg text-gray-950">
+                            <span className="mx-2">
+                                {type === 'success' && '😊'}
+                                {type === 'error' && '🙄'}
+                            </span>
+                            {message}
+                        </p>
                     </div>
                     <button onClick={handleClose} className="ml-4">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">

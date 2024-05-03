@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const baseURL = "http://localhost:8000/api/v1";
+// const baseURL = "https://videotube-r7ku.onrender.com/api/v1";
 
 axios.defaults.withCredentials = true;
 export const registerUser = async (formData) => {
@@ -50,6 +51,39 @@ export const updateAccountDetails = async (formData) => {
     }
 }
 
+export const changeCurrentUserPassword = async (formData) => {
+    console.log(formData);
+    try {
+        const response = await axios.post(`${baseURL}/users/change-password`, formData, {
+            withCredentials: true
+        });
+        console.log(response);
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+}
+
+export const changeUserAvatar = async (formData) => {
+    try {
+        const response = await axios.patch(`${baseURL}/users/avatar`, formData);
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+}
+
+export const changeUserCoverImage = async (formData) => {
+    console.log(formData);
+    try {
+        const response = await axios.patch(`${baseURL}/users/coverImage`, formData);
+        console.log(response);
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+}
+
 
 export const refreshAccessToken = async () => {
     try {
@@ -66,9 +100,6 @@ export const getAllVideos = async (params = null) => {
 
     try {
         const response = await axios.get(`${baseURL}/videos`, {
-            // headers: {
-            //     Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
-            // },
             params,
             withCredentials: true
         });
@@ -81,9 +112,6 @@ export const getAllVideos = async (params = null) => {
 export const getSingleVideo = async (videoId) => {
     try {
         const response = await axios.get(`${baseURL}/videos/${videoId}`, {
-            // headers: {
-            //     Authorization: `Bearer ${window.localStorage.getItem("accessToken")}`,
-            // },
             withCredentials: true,
         });
         return response.data;
@@ -238,6 +266,25 @@ export const deleteComment = async (commentId) => {
 export const getChannelDetails = async (channelUsername) => {
     try {
         const response = await axios.get(`${baseURL}/users/c/${channelUsername}`)
+        return response.data;
+    } catch (error) {
+        console.error("Error occurred:", error);
+    }
+}
+
+export const addToWatchHistory = async (videoId) => {
+    try {
+        const response = await axios.post(`${baseURL}/users/history/${videoId}`, null)
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error occurred:", error);
+    }
+}
+
+export const getWatchHistory = async () => {
+    try {
+        const response = await axios.get(`${baseURL}/users/history`)
         return response.data;
     } catch (error) {
         console.error("Error occurred:", error);

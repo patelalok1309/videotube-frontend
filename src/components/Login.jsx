@@ -4,7 +4,6 @@ import { loginUser } from '../api';
 import { LoadingSpinner } from '../components'
 import { useDispatch } from 'react-redux';
 import { login as authLogin } from '../store/authSlice'
-import Cookies from 'js-cookie';
 import  {  useNavigate }  from 'react-router-dom';
 
 const Login = () => {
@@ -37,7 +36,7 @@ const Login = () => {
 
     loginUser(formData)
       .then(res => {
-        if (res.success) {
+        if (res?.success) {
           setFormData({
             password: '',
             email: '',
@@ -48,6 +47,10 @@ const Login = () => {
         } else {
           setIsLoading(false);
         }
+      })
+      .catch(err => {
+        console.error(err)
+        setIsLoading(false)
       })
   };
 

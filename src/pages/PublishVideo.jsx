@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { setAlert, setSidebarVisibility } from '../store/layoutSlice';
+import { setAlert } from '../store/layoutSlice';
 import { publishVideo } from '../api';
-import { LoadingSpinner } from '../components';
+import { LoadingSpinner, PageWrapper } from '../components';
 
 function PublishVideo() {
 
@@ -81,7 +81,8 @@ function PublishVideo() {
 
 
     return (
-        <div className='p-16'>
+        <PageWrapper>
+
             <h2 className='text-4xl text-fuchsia-100 mb-4'>Publish Video</h2>
             {/* video file form  */}
             <form encType='multipart/formdata' onSubmit={(e) => handleSubmit(e)}>
@@ -223,7 +224,7 @@ function PublishVideo() {
                 }
             </form>
 
-        </div>
+        </PageWrapper>
     )
 }
 

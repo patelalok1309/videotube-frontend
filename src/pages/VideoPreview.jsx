@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { deleteComment, getSingleVideo, getVideoComments, incrementVideoViews, submitComment, toggleLike, toggleSubscribe, updateComment } from "../api";
+import { addToWatchHistory, deleteComment, getSingleVideo, getVideoComments, incrementVideoViews, submitComment, toggleLike, toggleSubscribe, updateComment } from "../api";
 import ReactPlayer from "react-player";
 import { LikeDislikeButton, RoundedBtn, Verticledots } from "../components/Buttons";
 import { humanReadableDateTime } from "../utils/dateConverter";
@@ -18,6 +18,7 @@ function VideoPreview() {
     const [commentDropdownState, setCommentDropdownState] = useState({})
     const [commentEditIndex, setCommentEditIndex] = useState(null)
     const [commentEditContent, setCommentEditContent] = useState('')
+    const [isAddedToHistory, setIsAddedToHistory] = useState(false)
 
     const authUser = useSelector(state => state.authSlice.auth.userData)
     const navigate = useNavigate();
@@ -38,11 +39,11 @@ function VideoPreview() {
                     setIsSubscribed(response?.data.isUserSubscriberOfChannel)
                 });
 
-            getVideoComments(videoId)
-                .then(response => {
-                    setCommentsList(response?.data?.docs)
-                    setTotalComments(response?.data.totalDocs)
-                })
+            if (!isAddedToHistory) {
+                addToWatchHistory(videoId)
+                    .then(res => console.log('res', res))
+                    .catch(err => console.error(err))
+            }
         }
     }, []);
 
@@ -261,7 +262,7 @@ function VideoPreview() {
                                     <div className="min-h-12 min-w-12 rounded-full aspect-sq" style={{
                                         backgroundImage: `url(${comment?.owner.avatar})`,
                                         backgroundSize: "cover",
-                                        backgroundPosition : "center",
+                                        backgroundPosition: "center",
                                     }}>
                                     </div>
                                 </Link>
@@ -271,7 +272,7 @@ function VideoPreview() {
                                         <input type="text" id="comment" className="border-b-2 border-gray-700  focus:border-gray-300 pb-2 text-lg bg-transparent outline-none  ml-4 w-full" placeholder="Edit a comment" value={commentEditContent} onChange={(e) => setCommentEditContent(e.target.value)} />
                                         <div className="flex gap-2 justify-center items-center">
                                             {/* Submit comment button  */}
-                                            <RoundedBtn 
+                                            <RoundedBtn
                                                 btnText={"Save"}
                                                 classNames={`text-md font-semibold px-4 py-1 bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50 flex items-center justify-center ${commentEditContent.length === 0 ? 'bg-gray-300 cursor-not-allowed ' : 'bg-[#3ea6ff]'}`}
                                                 onClick={() => handleUpdateComment(comment?._id)}

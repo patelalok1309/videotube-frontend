@@ -13,6 +13,7 @@ import SearchResultList from './pages/SearchResultList.jsx'
 import ChannelPreview from './pages/ChannelPreview.jsx'
 import PageNotFound from './pages/PageNotFound.jsx'
 import UserProfile from './pages/UserProfile.jsx'
+import WatchHistory from './pages/WatchHistory.jsx'
 
 const router = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: '/profile',
         element : <UserProfile />
+      },
+      {
+        path: '/feed/history',
+        element : <WatchHistory />
       },
       {
         path: '*',

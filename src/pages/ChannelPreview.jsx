@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { RoundedBtn } from '../components/Buttons'
 import { useParams } from 'react-router-dom'
 import { getChannelDetails, toggleSubscribe } from '../api';
-import { VideoLayout } from '../components';
+import { PageWrapper, VideoLayout } from '../components';
 
 function ChannelPreview() {
 
@@ -33,8 +33,7 @@ function ChannelPreview() {
     }
 
     return (
-        <div className='px-4 py-2 sm:px-10 sm:py-4 md:px-16 md:py-10'>
-
+        <PageWrapper>
             {/* CoverImage  */}
             <div className="w-full h-[150px] sm:h-[220px] md:h-[240px] rounded-2xl" style={{ backgroundImage: `url(${channel?.coverImage})`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>
             </div>
@@ -42,8 +41,9 @@ function ChannelPreview() {
             {/* Channel metadata and avatar  */}
             <div className='flex items-center mt-7'>
                 {/* left avatar section  */}
-                <div className='aspect-square min-w-[140px] sm:min-w-[160px] md:min-w-[180px] max-w-[200px]'>
-                    <img src={`${channel?.avatar}`} alt="avatar" className='rounded-full w-full' />
+                <div
+                    style={{ backgroundImage: `url(${channel?.avatar})`, backgroundSize: 'cover', backgroundPosition: 'center center' }}
+                    className='aspect-square rounded-full min-w-[140px] sm:min-w-[160px] md:min-w-[180px] max-w-[200px]'>
                 </div>
 
                 {/* right channel meta data section  */}
@@ -81,7 +81,7 @@ function ChannelPreview() {
                     <VideoLayout videos={channel?.videos} />
                 )}
             </div>
-        </div>
+        </PageWrapper>
         // page wrapper 
     )
 }

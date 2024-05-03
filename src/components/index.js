@@ -7,6 +7,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import SidebarTogglerBtn from "./Buttons/SidebarTogglerBtn";
 import Alert from "./Alert";
 import VideoLayout from "./VideoLayout";
+import PageWrapper from "./PageWrapper";
 
 export {
     Sidebar,
@@ -17,5 +18,6 @@ export {
     LoadingSpinner,
     SidebarTogglerBtn,
     Alert,
-    VideoLayout
+    VideoLayout,
+    PageWrapper,
 }

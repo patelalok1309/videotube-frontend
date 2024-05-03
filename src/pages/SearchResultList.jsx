@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { getAllVideos } from '../api';
 import { humanReadableDateTime } from '../utils/dateConverter';
+import { PageWrapper } from '../components';
 
 
 function SearchResultList() {
@@ -26,7 +27,7 @@ function SearchResultList() {
     }, [location.search])
 
     return (
-        <div className='px-4 py-1 sm:px-16 sm:py-4 border-1 border-gray-300'>
+        <PageWrapper>
             {videos?.length === 0 ?
                 <div className='text-center font-semibold text-3xl '>Sorry ! No videos founds</div> :
                 videos?.map(video => (
@@ -70,7 +71,7 @@ function SearchResultList() {
                     </div>
                 ))
             }
-        </div>
+        </PageWrapper>
 
 
 

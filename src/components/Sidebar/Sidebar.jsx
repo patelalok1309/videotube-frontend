@@ -3,6 +3,8 @@ import { NavLink } from 'react-router-dom'
 import Logo from '../Logo';
 import { useDispatch } from 'react-redux';
 import { setSidebarVisibility } from '../../store/layoutSlice';
+import { MdHistory, MdOutlineVideoCameraBack } from "react-icons/md";
+import { IoHomeOutline } from "react-icons/io5";
 
 function Sidebar() {
 
@@ -14,53 +16,29 @@ function Sidebar() {
   return (
     <div className='h-max flex flex-col items-center py-4 px-2 z-40 min-h-screen fixed top-0 left-0 bg-[#040404]'>
       {/* Youtube logo */}
-      <div className="sticky top-0">
+      <div className="sticky top-0 mb-10de">
         <NavLink to="/" className="flex justify-center items-center">
           <Logo />
         </NavLink>
       </div>
 
-      <div className="mt-14 rounded-2xl py-2 px-2 hover:bg-[#f9fafb1a] bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50  w-full">
-        <NavLink className="flex items-center px-1" onClick={handleSidebarClick}>
-          <svg enableBackground="new 0 0 24 24" height={'0.8rem'} viewBox="0 0 24 24" width={'0.8rem'} focusable="false" fill='#fff' style={{
-              pointerEvents: "none",
-              display: "inherit",
-              width: "2.5rem",
-              height: "2.5rem",
-              fontWeight: 'bolder',
-              paddingLeft: '0.5rem'
-            }}
-          >
-            <path d="m12 4.44 7 6.09V20h-4v-6H9v6H5v-9.47l7-6.09m0-1.32-8 6.96V21h6v-6h4v6h6V10.08l-8-6.96z" />
-          </svg>
-          <p className='text-xl font-medium ps-3 text-nowrap'>Home</p>
-        </NavLink>
-      </div>
+      <SidebarTab icon={<IoHomeOutline size={'1.7rem'} />} navlink="/" text="Home" onClick={handleSidebarClick} />
+      <SidebarTab icon={<MdOutlineVideoCameraBack size={'1.7rem'} />} navlink="/publishVideo" text="Publish video" onClick={handleSidebarClick} />
 
-      {/* Publish video */}
-      <div className="mt-2 rounded-2xl py-2 px-3 hover:bg-[#f9fafb1a] bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50  w-full">
-        <NavLink className="flex items-center px-1" to="/publishVideo" onClick={handleSidebarClick}>
-          <svg
-            enableBackground="new 0 0 24 24"
-            height={'0.8rem'}
-            viewBox="0 0 24 24"
-            width={'0.8rem'}
-            focusable="false"
-            fill='#fff'
-            style={{
-              pointerEvents: "none",
-              display: "inherit",
-              width: "2.5rem",
-              height: "2.5rem",
-              fontWeight: 'bolder',
-              paddingLeft: '0.5rem'
-            }}
-          >
-            <path d="m22.01 4.91-.5-2.96L1.64 5.19 2 8v13h20V8H3.06l18.95-3.09zM5 9l1 3h3L8 9h2l1 3h3l-1-3h2l1 3h3l-1-3h3v11H3V9h2z"></path>
-          </svg>
-          <p className='text-xl font-medium ps-3 text-nowrap'>Publish video</p>
-        </NavLink>
-      </div>
+      <span className="w-full block border border-gray-300 my-4"></span>
+
+      <SidebarTab icon={<MdHistory size={'1.7rem'} />} navlink="/feed/history" text="Watch history" onClick={handleSidebarClick} />
+    </div>
+  )
+}
+
+const SidebarTab = ({ icon, navlink, text, onClick }) => {
+  return (
+    <div className="mt-2 rounded-2xl py-2 px-3 hover:bg-[#f9fafb1a] bg-opacity-25 backdrop-filter backdrop-blur-md border-none text-white font-bold transition-colors duration-300 hover:bg-opacity-50  w-full">
+      <NavLink className="flex items-center px-1" to={`${navlink}`} onClick={onClick}>
+        {icon}
+        <p className='text-lg font-medium ps-3 text-nowrap'>{text}</p>
+      </NavLink>
     </div>
   )
 }

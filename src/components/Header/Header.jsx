@@ -131,11 +131,13 @@ function Header() {
                   </button>
                 </li>
                 <li className="flex justify-center items-center">
-                  <div
-                    className="h-12 w-12 rounded-full"
+                  <div 
+                    onClick={() => navigate('/profile')}
+                    className="h-12 w-12 rounded-full cursor-pointer"
                     style={{
                       backgroundImage: `url(${authUser?.avatar})`,
-                      backgroundSize: 'cover'
+                      backgroundSize: 'cover',
+                      backgroundPosition : 'center'
                     }}
                   >
                   </div>
