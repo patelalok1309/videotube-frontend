@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const baseURL = "http://localhost:8000/api/v1";
-// const baseURL = "https://videotube-r7ku.onrender.com/api/v1";
+// const baseURL = "http://localhost:8000/api/v1";
+const baseURL = "https://videotube-r7ku.onrender.com/api/v1";
 
 axios.defaults.withCredentials = true;
 export const registerUser = async (formData) => {
