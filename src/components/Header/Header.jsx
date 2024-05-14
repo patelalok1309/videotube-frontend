@@ -7,6 +7,7 @@ import Logo from "../Logo";
 import { IoIosSearch } from "react-icons/io";
 import { logout } from "../../store/authSlice";
 import { logoutUser } from "../../api";
+import { IoClose } from "react-icons/io5";
 
 function Header() {
   const authStatus = useSelector((state) => state.authSlice.auth.status);
@@ -69,7 +70,7 @@ function Header() {
   }, [])
 
   return (
-    <header className="py-2 px-16 bg-[#0f0f0f] shadow shadow-[#0c0c0c] sticky top-0 z-50">
+    <header className="p-1 sm:px-16 bg-[#0f0f0f] shadow shadow-[#0c0c0c] sticky top-0 z-50">
       <nav>
         <div className="flex items-center">
           <button onClick={handleSidebarToggle} className="mr-2 rounded-full hover:bg-black hover:opacity-80 hover:backdrop-blur-sm">
@@ -77,12 +78,12 @@ function Header() {
           </button>
           {/* Youtube logo */}
           <div className="sticky top-0">
-            <NavLink to="/" className="flex justify-start ml-5 items-center">
+            <NavLink to="/" className="flex justify-start sm:ml-5 items-center">
               <Logo />
             </NavLink>
           </div>
 
-          <div className="w-1/3">
+          <div className="w-4/5 sm:w-1/3">
             <div className="rounded-3xl border-2 border-[#222222] p-[1px] bg-[#222222] flex justify-start items-center">
 
               {/* searchBar  */}
@@ -99,7 +100,7 @@ function Header() {
                   }
                 }}
                 type="text"
-                className="px-4 py-2 bg-[#121212] w-[90%] border-gray-600 rounded-l-3xl focus:border-gray-600 @apply focus:outline-gray-900 !important" />
+                className="p-1 sm:px-4 sm:py-2 bg-[#121212] w-[90%] border-gray-600 rounded-l-3xl focus:border-gray-600 @apply focus:outline-gray-900 !important" />
               <button id="searchBtn" onClick={handleSearchTerm} className="rounded-r-3xl flex justify-center items-center px-5">
                 <IoIosSearch className="w-full h-full " size={24} />
               </button>
@@ -107,22 +108,9 @@ function Header() {
           </div>
 
           <ul className="flex ml-auto flex-wrap text-sm md:text-2xl">
-            {navItems.map((item) =>
-              item.active ? (
-                <li key={item.name} className="flex items-center justify-center mx-1">
-                  <button
-                    className="inline-block px-5 py-1 duration-200 rounded-full hover:bg-black hover:opacity-80 text-lg"
-                    onClick={() => navigate(item.slug)}
-                  >
-                    {item.name}
-                  </button>
-                </li>
-              ) : null
-            )}
-
             {authStatus && (
               <>
-                <li key={"logoutbtn"} className="flex items-center justify-center mx-1">
+                <li key={"logoutbtn"} className="hidden sm:flex items-center justify-center mx-1 ">
                   <button
                     className="inline-block px-5 py-1 duration-200 rounded-full hover:bg-black hover:opacity-80 text-lg"
                     onClick={handleLogout}
@@ -131,15 +119,23 @@ function Header() {
                   </button>
                 </li>
                 <li className="flex justify-center items-center">
-                  <div 
+                  <div
                     onClick={() => navigate('/profile')}
                     className="h-12 w-12 rounded-full cursor-pointer"
                     style={{
                       backgroundImage: `url(${authUser?.avatar})`,
                       backgroundSize: 'cover',
-                      backgroundPosition : 'center'
+                      backgroundPosition: 'center'
                     }}
                   >
+                  </div>
+                </li>
+                <li className="flex justify-center items-center">
+                  <div
+                    onClick={() => navigate('/profile')}
+                    className="h-12 w-12 rounded-full cursor-poin ter"
+                  >
+                    <IoClose />
                   </div>
                 </li>
               </>

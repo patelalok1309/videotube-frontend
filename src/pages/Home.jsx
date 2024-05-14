@@ -12,18 +12,28 @@ function Home() {
   const [videos, setVideos] = useState([]);
   const dispatch = useDispatch();
   const videosOnStore = useSelector(state => state.layoutSlice.videos)
+  const [videosFetched, setVideosFetched] = useState(false);
 
   useEffect(() => {
-    if (videosOnStore.length === 0) {
+    if (!videosFetched) { // Check if videos have been fetched
       getAllVideos()
         .then((response) => {
-          setVideos(response)
-          dispatch(pushVideos(response))
+          if (response && response.length > 0) { // Check for null or empty array
+            setVideos(response);
+            dispatch(pushVideos(response));
+            setVideosFetched(true); // Set flag to true
+          }
         })
+        .catch((error) => {
+          console.error("Error fetching videos:", error);
+        });
     } else {
-      setVideos(videosOnStore[0])
+      // Optionally, you can set videos from the store here
+      if (videosOnStore.length === 0) {
+        setVideos(videosOnStore[0]);
+      }
     }
-  }, [videosOnStore])
+  }, [])
 
   return (
     <PageWrapper>
