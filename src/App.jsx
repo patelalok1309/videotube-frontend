@@ -10,27 +10,29 @@ function App() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const sidebarVisible = useSelector((state) => state.layoutSlice.sidebar.isVisible)
-  const alertVisible = useSelector((state) => state.layoutSlice.alert.alertVisible)
-  const isUserExist = useSelector(state => state.authSlice.auth.status)
+  const sidebarVisible = useSelector((state) => state.layout.sidebar.isVisible)
+  const alertVisible = useSelector((state) => state.layout.alert.alertVisible)
+  const isUserExist = useSelector(state => {
+    console.log("The state is ", state)
+    return state?.auth?.auth.status})
 
-  useEffect(() => {
-    if (!isUserExist) {
-      getCurrentUser()
-        .then(res => {
-          if(res?.success){
-            dispatch(authLogin(res.data));
-          }
-          else{
-            navigate('/login')
-          }
-        })
-        .catch(err => {
-          console.error(err); 
-          navigate('/');
-        });
-    }
-  }, [dispatch, isUserExist]);
+  // useEffect(() => {
+  //   if (!isUserExist) {
+  //     getCurrentUser()
+  //       .then(res => {
+  //         if(res?.success){
+  //           dispatch(authLogin(res.data));
+  //         }
+  //         else{
+  //           navigate('/login')
+  //         }
+  //       })
+  //       .catch(err => {
+  //         console.error(err); 
+  //         navigate('/');
+  //       });
+  //   }
+  // }, [dispatch, isUserExist]);
 
   return (
     <div className='bg-[#0f0f0f] text-white ' >

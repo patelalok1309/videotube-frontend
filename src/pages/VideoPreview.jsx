@@ -20,7 +20,7 @@ function VideoPreview() {
     const [commentEditContent, setCommentEditContent] = useState('')
     const [isAddedToHistory, setIsAddedToHistory] = useState(false)
 
-    const authUser = useSelector(state => state.authSlice.auth.userData)
+    const authUser = useSelector(state => state.auth.auth.userData)
     const navigate = useNavigate();
 
     useEffect(() => {

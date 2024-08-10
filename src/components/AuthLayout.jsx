@@ -4,7 +4,7 @@ import { getCurrentUser } from '../api';
 
 function AuthLayout() {
     useEffect(() => {
-        const isUserExist = useSelector(state => state.authSlice.auth.status)
+        const isUserExist = useSelector(state => state.auth.auth.status)
 
         if (!isUserExist) {
             getCurrentUser()

@@ -8,7 +8,7 @@ import { login } from '../store/authSlice';
 
 function UserProfile() {
 
-    const authUser = useSelector((state) => state.authSlice.auth.userData);
+    const authUser = useSelector((state) => state.auth.auth.userData);
     const dispatch = useDispatch();
 
     const [user, setUser] = useState(null)

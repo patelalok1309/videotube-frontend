@@ -10,8 +10,8 @@ import { logoutUser } from "../../api";
 import { IoClose } from "react-icons/io5";
 
 function Header() {
-  const authStatus = useSelector((state) => state.authSlice.auth.status);
-  const authUser = useSelector((state) => state.authSlice.auth.userData);
+  const authStatus = useSelector((state) => state.auth.auth.status);
+  const authUser = useSelector((state) => state.auth.auth.userData);
   const [searchText, setSearchText] = useState('')
   const navigate = useNavigate();
   const dispatch = useDispatch();

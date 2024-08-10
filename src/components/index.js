@@ -8,6 +8,7 @@ import SidebarTogglerBtn from "./Buttons/SidebarTogglerBtn";
 import Alert from "./Alert";
 import VideoLayout from "./VideoLayout";
 import PageWrapper from "./PageWrapper";
+import LoadingSkeleton from "./LoadingSkeleton";
 
 export {
     Sidebar,
@@ -20,4 +21,5 @@ export {
     Alert,
     VideoLayout,
     PageWrapper,
-}
+    LoadingSkeleton,
+};
